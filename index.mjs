@@ -62,6 +62,7 @@ app.get("/", async (req, res) => {
     process.env.ROOT_PASS,
     UserType.FUSER
   );
+  console.log(process.env.ROOT_LOG);
   res.json({ message: "Hello, World!", token: token });
 });
 
