@@ -42,15 +42,19 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ Response: "Error", data: { type: error.message } });
   }
 });
+
 app.post("/register", async (req, res) => {
-  const { login, password } = req.body;
+  const { login, password, token } = req.body;
   try {
-    const token = await auth.register(login, password, UserType.VISITOR);
-    res.status(200).json({ Response: "Ok", data: { token: token } });
+    const decoded = await auth.checkJWT(token);
+    console.log("create account from" + decoded.userId);
+    const newtoken = await auth.register(login, password, UserType.VISITOR);
+    res.status(200).json({ Response: "Ok", data: { token: newtoken } });
   } catch (error) {
     res.status(500).json({ Response: "Error", data: { type: error.message } });
   }
 });
+
 app.post("/delete", async (req, res) => {
   const { token } = req.body;
   try {
