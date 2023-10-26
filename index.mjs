@@ -57,13 +57,7 @@ app.post("/register", async (req, res) => {
 
 app.get("/", async (req, res) => {
   // Respond with a JSON object
-  console.log(process.env.ROOT_LOG);
-  const token = await auth.login(
-    process.env.ROOT_LOG,
-    process.env.ROOT_PASS,
-    UserType.FUSER
-  );
-  res.json({ message: "Hello, World!", token: token });
+  res.json({ message: "Hello, World!" });
 });
 
 app.post("/delete", async (req, res) => {
