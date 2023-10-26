@@ -39,7 +39,7 @@ app.post("/login", async (req, res) => {
     const token = await auth.login(login, password, UserType.FUSER);
     res.status(200).json({ Response: "Ok", data: { token: token } });
   } catch (error) {
-    res.status(500).json({ Response: "Error", data: { type: error.message } });
+    res.status(500).json({ Response: "Error", data: { type: error } });
   }
 });
 
