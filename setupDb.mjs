@@ -28,8 +28,8 @@ const mysqlConfigFirst = {
   let account;
   let auth;
   try {
-    con = await mysql.createConnection(mysqlConfigFirst);
-    await con.query(`CREATE DATABASE mapi;`);
+    //con = await mysql.createConnection(mysqlConfigFirst);
+    //await con.query(`CREATE DATABASE mapi;`);
     mysqlPool = await mysql.createPool(mysqlConfig);
     auth = new MitiAuth(mysqlPool, new MitiSettings(UserType, TableRows));
     await auth.setupDatabase();
