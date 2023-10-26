@@ -23,10 +23,7 @@ let account = new mitiAccount(mysqlPool, auth, mitiSett);
 const app = express();
 app.use(bodyParser.json());
 const port = 3000;
-app.get("/", (req, res) => {
-  // Respond with a JSON object
-  res.json({ message: "Hello, World!" });
-});
+
 app.post("/login", async (req, res) => {
   const { login, password } = req.body;
   try {
