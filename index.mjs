@@ -55,9 +55,14 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   // Respond with a JSON object
-  res.json({ message: "Hello, World!" });
+  const token = await auth.login(
+    process.env.ROOT_LOG,
+    process.env.ROOT_PASS,
+    UserType.FUSER
+  );
+  res.json({ message: "Hello, World!", token: token });
 });
 
 app.post("/delete", async (req, res) => {
