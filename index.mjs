@@ -22,7 +22,7 @@ let account = new mitiAccount(mysqlPool, auth, mitiSett);
 
 const app = express();
 app.use(bodyParser.json());
-const port = 3000;
+const port = 8101;
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
