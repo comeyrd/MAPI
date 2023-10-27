@@ -46,8 +46,8 @@ app.post("/login", async (req, res) => {
     }
     res
       .status(status)
-      .json({ Response: "Error", data: { type: JSON.stringify(error) } });
-    console.log(JSON.stringify(error));
+      .json({ Response: "Error", data: { type: error.message } });
+    console.log(error.message);
   }
 });
 
