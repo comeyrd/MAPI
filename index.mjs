@@ -40,8 +40,13 @@ app.post("/login", async (req, res) => {
     console.log("user :" + login + " tried to log in");
     res.status(200).json({ Response: "Ok", data: { token: token } });
   } catch (error) {
-    res.status(500).json({ Response: "Error", data: { type: error.message } });
-    console.log("Error loggin in :  " + error.message);
+    let status = 500;
+    if (error.message == auth.USER_DONT_EXISTS) {
+      status = 404;
+    }
+    res
+      .status(status)
+      .json({ Response: "Error", data: { type: JSON.stringify(error) } });
   }
 });
 
