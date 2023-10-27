@@ -37,6 +37,7 @@ app.post("/login", async (req, res) => {
   const { login, password } = req.body;
   try {
     const token = await auth.login(login, password, UserType.FUSER);
+    console.log("user :" + login + " tried to log in");
     res.status(200).json({ Response: "Ok", data: { token: token } });
   } catch (error) {
     res.status(500).json({ Response: "Error", data: { type: error } });
