@@ -51,7 +51,7 @@ app.post("/login", async (req, res) => {
 app.post("/validate", async (req, res) => {
   const { token } = req.body;
   try {
-    const decoded = await auth.checkJWT(login, password, UserType.FUSER);
+    const decoded = await auth.checkJWT(token);
     if ((decoded.type = UserType.FUSER) && decoded.userId) {
       res.status(200).json({
         Response: "Ok",
