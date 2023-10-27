@@ -111,7 +111,7 @@ app.post("/update", async (req, res) => {
       .json({ Response: "Error", data: { Message: error.message } });
   }
 });
+*/
 app.listen(port, () => {
   console.log(`Server is listening at http://localhost:${port}`);
 });
-*/
