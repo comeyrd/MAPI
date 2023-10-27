@@ -43,13 +43,7 @@ app.post("/login", async (req, res) => {
       data: { token: token, expiration: auth.jwtExpiration },
     });
   } catch (error) {
-    let status = 500;
-    if (error == auth.USER_DONT_EXISTS) {
-      status = 404;
-    }
-    res
-      .status(status)
-      .json({ Response: "Error", data: { type: error.message } });
+    res.status(200).json({ Response: "Error", data: { type: error.message } });
     console.log(error.message);
   }
 });
@@ -60,18 +54,12 @@ app.post("/validate", async (req, res) => {
     const decoded = await auth.checkJWT(login, password, UserType.FUSER);
     if ((decoded.type = UserType.FUSER) && decoded.userId) {
       res.status(200).json({
-        Response: "Validated",
+        Response: "Ok",
         data: { id: userId, type: UserType.FUSER },
       });
     }
   } catch (error) {
-    let status = 500;
-    if (error == auth.USER_DONT_EXISTS) {
-      status = 404;
-    }
-    res
-      .status(status)
-      .json({ Response: "Error", data: { type: error.message } });
+    res.status(200).json({ Response: "Error", data: { type: error.message } });
     console.log(error.message);
   }
 });
