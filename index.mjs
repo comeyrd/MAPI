@@ -53,6 +53,28 @@ app.post("/login", async (req, res) => {
     console.log(error.message);
   }
 });
+
+app.post("/validate", async (req, res) => {
+  const { token } = req.body;
+  try {
+    const decoded = await auth.checkJWT(login, password, UserType.FUSER);
+    if ((decoded.type = UserType.FUSER) && decoded.userId) {
+      res.status(200).json({
+        Response: "Validated",
+        data: { id: userId, type: UserType.FUSER },
+      });
+    }
+  } catch (error) {
+    let status = 500;
+    if (error == auth.USER_DONT_EXISTS) {
+      status = 404;
+    }
+    res
+      .status(status)
+      .json({ Response: "Error", data: { type: error.message } });
+    console.log(error.message);
+  }
+});
 /*
 app.post("/register", async (req, res) => {
   const { login, password, token } = req.body;
