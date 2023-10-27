@@ -40,6 +40,7 @@ app.post("/login", async (req, res) => {
     res.status(200).json({ Response: "Ok", data: { token: token } });
   } catch (error) {
     res.status(500).json({ Response: "Error", data: { type: error } });
+    console.log(error.message);
   }
 });
 
