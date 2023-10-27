@@ -41,12 +41,13 @@ app.post("/login", async (req, res) => {
     res.status(200).json({ Response: "Ok", data: { token: token } });
   } catch (error) {
     let status = 500;
-    if (error.message == auth.USER_DONT_EXISTS) {
+    if (error == auth.USER_DONT_EXISTS) {
       status = 404;
     }
     res
       .status(status)
       .json({ Response: "Error", data: { type: JSON.stringify(error) } });
+    console.log(JSON.stringify(error));
   }
 });
 
