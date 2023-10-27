@@ -38,7 +38,10 @@ app.post("/login", async (req, res) => {
   try {
     const token = await auth.login(login, password, UserType.FUSER);
     console.log("user :" + login + " tried to log in");
-    res.status(200).json({ Response: "Ok", data: { token: token } });
+    res.status(200).json({
+      Response: "Ok",
+      data: { token: token, expiration: auth.jwtExpiration },
+    });
   } catch (error) {
     let status = 500;
     if (error == auth.USER_DONT_EXISTS) {
@@ -50,24 +53,27 @@ app.post("/login", async (req, res) => {
     console.log(error.message);
   }
 });
-
+/*
 app.post("/register", async (req, res) => {
   const { login, password, token } = req.body;
   try {
     const decoded = await auth.checkJWT(token);
     console.log("create account from" + decoded.userId);
     const newtoken = await auth.register(login, password, UserType.FUSER);
-    res.status(200).json({ Response: "Ok", data: { token: newtoken } });
+    res.status(200).json({
+      Response: "Ok",
+      data: { token: newtoken, expiration: auth.jwtExpiration },
+    });
   } catch (error) {
     res.status(500).json({ Response: "Error", data: { type: error.message } });
   }
 });
-
+*/
 app.get("/", async (req, res) => {
   // Respond with a JSON object
   res.json({ message: "Hello, World!" });
 });
-
+/*
 app.post("/delete", async (req, res) => {
   const { token } = req.body;
   try {
@@ -81,6 +87,7 @@ app.post("/delete", async (req, res) => {
       .json({ Response: "Error", data: { Message: error.message } });
   }
 });
+*/
 app.post("/logout", async (req, res) => {
   const { token } = req.body;
   try {
@@ -92,6 +99,7 @@ app.post("/logout", async (req, res) => {
       .json({ Response: "Error", data: { Message: error.message } });
   }
 });
+/*
 app.post("/update", async (req, res) => {
   const { token, login, password } = req.body;
   try {
@@ -106,3 +114,4 @@ app.post("/update", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is listening at http://localhost:${port}`);
 });
+*/
