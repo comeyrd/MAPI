@@ -88,7 +88,7 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.get("/getMyInfo", async (req, res) => {
+app.post("/getMyInfo", async (req, res) => {
   const { token } = req.body;
   try {
     const decoded = await auth.checkJWT(token);
