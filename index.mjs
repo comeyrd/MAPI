@@ -6,7 +6,7 @@ import mitiSettings from "miti-settings";
 import mysql from "mysql2/promise";
 import bodyParser from "body-parser";
 import { TableRows, UserType } from "./config.mjs";
-
+import util from "util";
 import dotenv from "dotenv";
 dotenv.config();
 const mysqlConfig = {
@@ -37,14 +37,12 @@ app.post("/login", async (req, res) => {
   const { login, password } = req.body;
   try {
     const token = await auth.login(login, password, UserType.FUSER);
-    console.log("user :" + login + " tried to log in");
     res.status(200).json({
       Response: "Ok",
       data: { token: token, expiration: auth.jwtExpiration },
     });
   } catch (error) {
     res.status(200).json({ Response: "Error", data: { type: error.message } });
-    console.log(error.message);
   }
 });
 
@@ -52,10 +50,10 @@ app.post("/validate", async (req, res) => {
   const { token } = req.body;
   try {
     const decoded = await auth.checkJWT(token);
-    if ((decoded.type = UserType.FUSER) && decoded.userId) {
+    if (decoded.type === UserType.FUSER && decoded.userId) {
       res.status(200).json({
         Response: "Ok",
-        data: { id: userId, type: UserType.FUSER },
+        data: { id: decoded.userId, type: UserType.FUSER },
       });
     }
   } catch (error) {
@@ -63,12 +61,10 @@ app.post("/validate", async (req, res) => {
     console.log(error.message);
   }
 });
-/*
+
 app.post("/register", async (req, res) => {
-  const { login, password, token } = req.body;
+  const { login, password } = req.body;
   try {
-    const decoded = await auth.checkJWT(token);
-    console.log("create account from" + decoded.userId);
     const newtoken = await auth.register(login, password, UserType.FUSER);
     res.status(200).json({
       Response: "Ok",
@@ -78,12 +74,12 @@ app.post("/register", async (req, res) => {
     res.status(500).json({ Response: "Error", data: { type: error.message } });
   }
 });
-*/
+
 app.get("/", async (req, res) => {
   // Respond with a JSON object
   res.json({ message: "Hello, World!" });
 });
-/*
+
 app.post("/delete", async (req, res) => {
   const { token } = req.body;
   try {
@@ -97,7 +93,7 @@ app.post("/delete", async (req, res) => {
       .json({ Response: "Error", data: { Message: error.message } });
   }
 });
-*/
+
 app.post("/logout", async (req, res) => {
   const { token } = req.body;
   try {
@@ -109,19 +105,22 @@ app.post("/logout", async (req, res) => {
       .json({ Response: "Error", data: { Message: error.message } });
   }
 });
-/*
 app.post("/update", async (req, res) => {
   const { token, login, password } = req.body;
   try {
-    const newtoken = await auth.update(token, login, password);
-    res.status(200).json({ Response: "Ok", data: { token: newtoken } });
+    await auth.update(token, login, password);
+    res.status(200).json({ Response: "Ok", data: { message: "Info Updated" } });
   } catch (error) {
     res
       .status(500)
       .json({ Response: "Error", data: { Message: error.message } });
   }
 });
-*/
 app.listen(port, () => {
   console.log(`Server is listening at http://localhost:${port}`);
 });
+
+function showObj(obj) {
+  console.log(util.inspect(obj, { depth: null }));
+}
+module.exports = app;
