@@ -77,7 +77,14 @@ app.post("/register", async (req, res) => {
 */
 app.get("/", async (req, res) => {
   // Respond with a JSON object
-  res.json({ message: "Hello, World!" });
+  res.json({
+    message: "Fmapi Routes Available",
+    routes: [
+      { id: "login", params: "login, password" },
+      { id: "validate", params: "token" },
+      { id: "logout", params: "token" },
+    ],
+  });
 });
 /*
 app.post("/delete", async (req, res) => {
