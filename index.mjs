@@ -61,7 +61,7 @@ app.post("/validate", async (req, res) => {
     console.log(error.message);
   }
 });
-
+/*
 app.post("/register", async (req, res) => {
   const { login, password } = req.body;
   try {
@@ -74,12 +74,12 @@ app.post("/register", async (req, res) => {
     res.status(500).json({ Response: "Error", data: { type: error.message } });
   }
 });
-
+*/
 app.get("/", async (req, res) => {
   // Respond with a JSON object
   res.json({ message: "Hello, World!" });
 });
-
+/*
 app.post("/delete", async (req, res) => {
   const { token } = req.body;
   try {
@@ -93,7 +93,7 @@ app.post("/delete", async (req, res) => {
       .json({ Response: "Error", data: { Message: error.message } });
   }
 });
-
+*/
 app.post("/logout", async (req, res) => {
   const { token } = req.body;
   try {
@@ -105,6 +105,7 @@ app.post("/logout", async (req, res) => {
       .json({ Response: "Error", data: { Message: error.message } });
   }
 });
+/*
 app.post("/update", async (req, res) => {
   const { token, login, password } = req.body;
   try {
@@ -116,6 +117,7 @@ app.post("/update", async (req, res) => {
       .json({ Response: "Error", data: { Message: error.message } });
   }
 });
+*/
 app.listen(port, () => {
   console.log(`Server is listening at http://localhost:${port}`);
 });
