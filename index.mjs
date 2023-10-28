@@ -93,7 +93,17 @@ app.get("/getMyInfo", async (req, res) => {
   try {
     const decoded = await auth.checkJWT(token);
     if (decoded.type === UserType.FUSER && decoded.userId) {
-      res.status(200).json(await account.read(token));
+      const uInfo = await account.read(token);
+      const userInfo = Object.entries(uInfo).map(([key, value]) => ({
+        [key]: value,
+      }));
+      const jsonResponse = {
+        Response: "Ok",
+        data: {
+          userInfo,
+        },
+      };
+      res.status(200).json(jsonResponse);
     }
   } catch (error) {
     res.status(200).json({ Response: "Error", data: { type: error.message } });
