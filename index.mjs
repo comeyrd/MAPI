@@ -123,4 +123,4 @@ app.listen(port, () => {
 function showObj(obj) {
   console.log(util.inspect(obj, { depth: null }));
 }
-module.exports = app;
+export { app };

@@ -2,7 +2,7 @@
 import { describe, it } from "vitest";
 import { expect } from "chai";
 import request from "supertest";
-import app from "./index.mjs"; // Import your Express app
+import { app } from "./index.mjs"; // Import your Express app
 import dotenv from "dotenv";
 
 dotenv.config();
