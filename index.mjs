@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 const port = 8101;
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); //TOFIX IN PROD
+  res.header("Access-Control-Allow-Origin", "fupload.ceyraud.com"); //TOFIX IN PROD
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
