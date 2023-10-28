@@ -38,7 +38,17 @@ const mysqlConfigFirst = {
       auth,
       new MitiSettings(UserType, TableRows)
     );
-    auth.register(process.env.ROOT_LOG, process.env.ROOT_PASS, UserType.FUSER);
+    /*await auth.register(
+      process.env.ROOT_LOG,
+      process.env.ROOT_PASS,
+      UserType.FUSER
+    );*/
+    const token = await auth.login(
+      process.env.ROOT_LOG,
+      process.env.ROOT_PASS,
+      UserType.FUSER
+    );
+    account.create({ name: "miti" }, token);
     await account.setupDatabase();
     console.log("Done");
   } catch (e) {

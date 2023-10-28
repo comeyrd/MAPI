@@ -83,8 +83,22 @@ app.get("/", async (req, res) => {
       { id: "login", params: "login, password" },
       { id: "validate", params: "token" },
       { id: "logout", params: "token" },
+      { id: "getMyInfo", params: "token" },
     ],
   });
+});
+
+app.get("/getMyInfo", async (req, res) => {
+  const { token } = req.body;
+  try {
+    const decoded = await auth.checkJWT(token);
+    if (decoded.type === UserType.FUSER && decoded.userId) {
+      res.status(200).json(await account.read(token));
+    }
+  } catch (error) {
+    res.status(200).json({ Response: "Error", data: { type: error.message } });
+    console.log(error.message);
+  }
 });
 /*
 app.post("/delete", async (req, res) => {
