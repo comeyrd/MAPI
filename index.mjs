@@ -94,7 +94,7 @@ app.post("/getMyInfo", async (req, res) => {
     const decoded = await auth.checkJWT(token);
     if (decoded.type === UserType.FUSER && decoded.userId) {
       const uInfo = await account.read(token);
-      const userInfo = Object.entries(uInfo).map(([key, value]) => ({
+      const userInfo = Object.entries(uInfo).map((key, value) => ({
         [key]: value,
       }));
       const jsonResponse = {
