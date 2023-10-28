@@ -22,29 +22,68 @@ let account = new mitiAccount(mysqlPool, auth, mitiSett);
 
 const app = express();
 app.use(bodyParser.json());
-const port = 3000;
-app.get("/", (req, res) => {
-  // Respond with a JSON object
-  res.json({ message: "Hello, World!" });
+const port = 8101;
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*"); //TOFIX IN PROD
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
 });
+
 app.post("/login", async (req, res) => {
   const { login, password } = req.body;
   try {
-    const token = await auth.login(login, password, UserType.VISITOR);
-    res.status(200).json({ Response: "Ok", data: { token: token } });
+    const token = await auth.login(login, password, UserType.FUSER);
+    console.log("user :" + login + " tried to log in");
+    res.status(200).json({
+      Response: "Ok",
+      data: { token: token, expiration: auth.jwtExpiration },
+    });
   } catch (error) {
-    res.status(500).json({ Response: "Error", data: { type: error.message } });
+    res.status(200).json({ Response: "Error", data: { type: error.message } });
+    console.log(error.message);
   }
 });
-app.post("/register", async (req, res) => {
-  const { login, password } = req.body;
+
+app.post("/validate", async (req, res) => {
+  const { token } = req.body;
   try {
-    const token = await auth.register(login, password, UserType.VISITOR);
-    res.status(200).json({ Response: "Ok", data: { token: token } });
+    const decoded = await auth.checkJWT(token);
+    if ((decoded.type = UserType.FUSER) && decoded.userId) {
+      res.status(200).json({
+        Response: "Ok",
+        data: { id: userId, type: UserType.FUSER },
+      });
+    }
+  } catch (error) {
+    res.status(200).json({ Response: "Error", data: { type: error.message } });
+    console.log(error.message);
+  }
+});
+/*
+app.post("/register", async (req, res) => {
+  const { login, password, token } = req.body;
+  try {
+    const decoded = await auth.checkJWT(token);
+    console.log("create account from" + decoded.userId);
+    const newtoken = await auth.register(login, password, UserType.FUSER);
+    res.status(200).json({
+      Response: "Ok",
+      data: { token: newtoken, expiration: auth.jwtExpiration },
+    });
   } catch (error) {
     res.status(500).json({ Response: "Error", data: { type: error.message } });
   }
 });
+*/
+app.get("/", async (req, res) => {
+  // Respond with a JSON object
+  res.json({ message: "Hello, World!" });
+});
+/*
 app.post("/delete", async (req, res) => {
   const { token } = req.body;
   try {
@@ -58,6 +97,7 @@ app.post("/delete", async (req, res) => {
       .json({ Response: "Error", data: { Message: error.message } });
   }
 });
+*/
 app.post("/logout", async (req, res) => {
   const { token } = req.body;
   try {
@@ -69,6 +109,7 @@ app.post("/logout", async (req, res) => {
       .json({ Response: "Error", data: { Message: error.message } });
   }
 });
+/*
 app.post("/update", async (req, res) => {
   const { token, login, password } = req.body;
   try {
@@ -80,6 +121,7 @@ app.post("/update", async (req, res) => {
       .json({ Response: "Error", data: { Message: error.message } });
   }
 });
+*/
 app.listen(port, () => {
   console.log(`Server is listening at http://localhost:${port}`);
 });
