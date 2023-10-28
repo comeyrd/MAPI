@@ -4,6 +4,7 @@ import { expect } from "chai";
 import request from "supertest";
 import { app } from "./index.mjs"; // Import your Express app
 import dotenv from "dotenv";
+import util from "util";
 
 dotenv.config();
 
@@ -174,4 +175,20 @@ describe("Express App Tests", () => {
     expect(deleteResp.status).to.equal(200);
     expect(deleteResp.body).to.have.property("Response", "Ok");
   });
+  it("get info", async () => {
+    const loginResp = await request(app)
+      .post("/login")
+      .send({ login: process.env.ROOT_LOG, password: process.env.ROOT_PASS });
+
+    expect(loginResp.status).to.equal(200);
+    expect(loginResp.body).to.have.property("Response", "Ok");
+    expect(loginResp.body.data).to.have.property("token");
+
+    const infoResp = await request(app)
+      .post("/getMyInfo")
+      .send({ token: loginResp.body.data.token });
+  });
 });
+function showObj(obj) {
+  console.log(util.inspect(obj, { depth: null }));
+}
