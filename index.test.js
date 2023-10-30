@@ -11,7 +11,7 @@ dotenv.config();
 describe("Express App Tests", () => {
   it("Login & Validate", async () => {
     const loginResp = await request(app)
-      .post("/login")
+      .post("/auth/login")
       .send({ login: process.env.ROOT_LOG, password: process.env.ROOT_PASS });
 
     expect(loginResp.status).to.equal(200);
@@ -19,7 +19,7 @@ describe("Express App Tests", () => {
     expect(loginResp.body.data).to.have.property("token");
 
     const validateResp = await request(app)
-      .post("/validate")
+      .post("/auth/validate")
       .send({ token: loginResp.body.data.token });
     expect(validateResp.status).to.equal(200);
     expect(validateResp.body).to.have.property("Response", "Ok");
@@ -35,7 +35,7 @@ describe("Express App Tests", () => {
     expect(registerResp.body).to.have.property("Response", "Ok");
 
     const loginResp = await request(app)
-      .post("/login")
+      .post("/auth/login")
       .send({ login: log1, password: pass1 });
 
     expect(loginResp.status).to.equal(200);
@@ -43,7 +43,7 @@ describe("Express App Tests", () => {
     expect(loginResp.body.data).to.have.property("token");
 
     const validateResp = await request(app)
-      .post("/validate")
+      .post("/auth/validate")
       .send({ token: loginResp.body.data.token });
     expect(validateResp.status).to.equal(200);
     expect(validateResp.body).to.have.property("Response", "Ok");
@@ -68,7 +68,7 @@ describe("Express App Tests", () => {
     expect(registerResp.body).to.have.property("Response", "Ok");
 
     const loginResp = await request(app)
-      .post("/login")
+      .post("/auth/login")
       .send({ login: log1, password: pass1 });
 
     expect(loginResp.status).to.equal(200);
@@ -76,7 +76,7 @@ describe("Express App Tests", () => {
     expect(loginResp.body.data).to.have.property("token");
 
     const validateResp = await request(app)
-      .post("/validate")
+      .post("/auth/validate")
       .send({ token: loginResp.body.data.token });
     expect(validateResp.status).to.equal(200);
     expect(validateResp.body).to.have.property("Response", "Ok");
@@ -88,7 +88,7 @@ describe("Express App Tests", () => {
     expect(updateResp.body).to.have.property("Response", "Ok");
 
     const login2Resp = await request(app)
-      .post("/login")
+      .post("/auth/login")
       .send({ login: log1, password: pass2 });
 
     expect(login2Resp.status).to.equal(200);
@@ -102,7 +102,7 @@ describe("Express App Tests", () => {
     expect(deleteResp.body).to.have.property("Response", "Ok");
 
     const login3Resp = await request(app)
-      .post("/login")
+      .post("/auth/login")
       .send({ login: log1, password: pass2 });
     expect(login3Resp.status).to.equal(200);
     expect(login3Resp.body).to.have.property("Response", "Error");
@@ -119,7 +119,7 @@ describe("Express App Tests", () => {
     expect(registerResp.body).to.have.property("Response", "Ok");
 
     const loginResp = await request(app)
-      .post("/login")
+      .post("/auth/login")
       .send({ login: log1, password: pass1 });
 
     expect(loginResp.status).to.equal(200);
@@ -133,7 +133,7 @@ describe("Express App Tests", () => {
     expect(deleteResp.body).to.have.property("Response", "Ok");
 
     const validateResp = await request(app)
-      .post("/validate")
+      .post("/auth/validate")
       .send({ token: loginResp.body.data.token });
     expect(validateResp.status).to.equal(200);
     expect(validateResp.body).to.have.property("Response", "Error");
@@ -150,7 +150,7 @@ describe("Express App Tests", () => {
     expect(registerResp.body).to.have.property("Response", "Ok");
 
     const loginResp = await request(app)
-      .post("/login")
+      .post("/auth/login")
       .send({ login: log1, password: pass1 });
 
     expect(loginResp.status).to.equal(200);
@@ -158,13 +158,13 @@ describe("Express App Tests", () => {
     expect(loginResp.body.data).to.have.property("token");
 
     const logout = await request(app)
-      .post("/logout")
+      .post("/auth/logout")
       .send({ token: loginResp.body.data.token });
     expect(logout.status).to.equal(200);
     expect(logout.body).to.have.property("Response", "Ok");
 
     const validateResp = await request(app)
-      .post("/login")
+      .post("/auth/login")
       .send({ token: logout.body.data.token });
     expect(validateResp.status).to.equal(200);
     expect(validateResp.body).to.have.property("Response", "Error");
@@ -177,7 +177,7 @@ describe("Express App Tests", () => {
   });
   it("get info", async () => {
     const loginResp = await request(app)
-      .post("/login")
+      .post("/auth/login")
       .send({ login: process.env.ROOT_LOG, password: process.env.ROOT_PASS });
 
     expect(loginResp.status).to.equal(200);
@@ -185,8 +185,17 @@ describe("Express App Tests", () => {
     expect(loginResp.body.data).to.have.property("token");
 
     const infoResp = await request(app)
-      .post("/getMyInfo")
+      .post("/account/get-info")
       .send({ token: loginResp.body.data.token });
+    expect(infoResp.status).to.equal(200);
+    expect(loginResp.body).to.have.property("Response", "Ok");
+
+    const scheme = await request(app)
+      .post("/account/get-scheme")
+      .send({ token: loginResp.body.data.token });
+    expect(scheme.status).to.equal(200);
+    expect(scheme.body).to.have.property("Response", "Ok");
+    expect(scheme.body.data).to.have.property("scheme");
   });
 });
 function showObj(obj) {

@@ -112,7 +112,7 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.post("/accout/get-info", authed, async (req, res) => {
+app.post("/account/get-info", authed, async (req, res) => {
   const { token } = req.body;
   const uInfo = await account.read(token);
   const jsonResponse = {
@@ -124,7 +124,7 @@ app.post("/accout/get-info", authed, async (req, res) => {
   res.status(200).json(jsonResponse);
 });
 
-app.get("/account/get-scheme", authed, async (req, res) => {
+app.post("/account/get-scheme", authed, async (req, res) => {
   res.status(200).json({
     Response: "Ok",
     data: { scheme: account.getScheme() },
