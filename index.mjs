@@ -123,14 +123,6 @@ app.post("/account/get-info", authed, async (req, res) => {
   };
   res.status(200).json(jsonResponse);
 });
-
-app.post("/account/get-scheme", authed, async (req, res) => {
-  res.status(200).json({
-    Response: "Ok",
-    data: { scheme: account.getScheme() },
-  });
-});
-
 /*
 app.post("/delete", async (req, res) => {
   const { token } = req.body;
