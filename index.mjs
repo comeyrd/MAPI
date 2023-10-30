@@ -33,7 +33,27 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post("/login", async (req, res) => {
+const authed = async (req, res, next) => {
+  const { token } = req.body;
+  try {
+    const decoded = await auth.checkJWT(token);
+    if (decoded.type === UserType.FUSER && decoded.userId) {
+      req.authData = {
+        type: decoded.type,
+        id: decoded.userId,
+      };
+      next();
+    }
+  } catch (error) {
+    res.status(200).json({
+      Response: "Error",
+      data: { type: "Auth Error", message: error.message },
+    });
+    console.log(error.message);
+  }
+};
+
+app.post("/auth/login", async (req, res) => {
   const { login, password } = req.body;
   try {
     const token = await auth.login(login, password, UserType.FUSER);
@@ -46,23 +66,16 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.post("/validate", async (req, res) => {
-  const { token } = req.body;
-  try {
-    const decoded = await auth.checkJWT(token);
-    if (decoded.type === UserType.FUSER && decoded.userId) {
-      res.status(200).json({
-        Response: "Ok",
-        data: { id: decoded.userId, type: UserType.FUSER },
-      });
-    }
-  } catch (error) {
-    res.status(200).json({ Response: "Error", data: { type: error.message } });
-    console.log(error.message);
-  }
+app.post("/auth/validate", authed, async (req, res) => {
+  const { id, type } = req.authData;
+
+  res.status(200).json({
+    Response: "Ok",
+    data: { id: id, type: type },
+  });
 });
 /*
-app.post("/register", async (req, res) => {
+app.post("/auth/register", async (req, res) => {
   const { login, password } = req.body;
   try {
     const newtoken = await auth.register(login, password, UserType.FUSER);
@@ -80,33 +93,44 @@ app.get("/", async (req, res) => {
   res.json({
     message: "Fmapi Routes Available",
     routes: [
-      { id: "login", params: "login, password" },
-      { id: "validate", params: "token" },
-      { id: "logout", params: "token" },
-      { id: "getMyInfo", params: "token" },
+      {
+        id: "/auth",
+        routes: [
+          { id: "/login", params: "login, password" },
+          { id: "/validate", params: "token" },
+          { id: "/logout", params: "token" },
+        ],
+      },
+      {
+        id: "/account",
+        routes: [
+          { id: "/get-info", params: "login, password" },
+          { id: "/edit", params: "token" },
+        ],
+      },
     ],
   });
 });
 
-app.post("/getMyInfo", async (req, res) => {
+app.post("/accout/get-info", authed, async (req, res) => {
   const { token } = req.body;
-  try {
-    const decoded = await auth.checkJWT(token);
-    if (decoded.type === UserType.FUSER && decoded.userId) {
-      const uInfo = await account.read(token);
-      const jsonResponse = {
-        Response: "Ok",
-        data: {
-          uInfo,
-        },
-      };
-      res.status(200).json(jsonResponse);
-    }
-  } catch (error) {
-    res.status(200).json({ Response: "Error", data: { type: error.message } });
-    console.log(error.message);
-  }
+  const uInfo = await account.read(token);
+  const jsonResponse = {
+    Response: "Ok",
+    data: {
+      uInfo,
+    },
+  };
+  res.status(200).json(jsonResponse);
 });
+
+app.get("/account/get-scheme", authed, async (req, res) => {
+  res.status(200).json({
+    Response: "Ok",
+    data: { scheme: account.getScheme() },
+  });
+});
+
 /*
 app.post("/delete", async (req, res) => {
   const { token } = req.body;
@@ -122,7 +146,7 @@ app.post("/delete", async (req, res) => {
   }
 });
 */
-app.post("/logout", async (req, res) => {
+app.post("/auth/logout", async (req, res) => {
   const { token } = req.body;
   try {
     const newtoken = await auth.logout(token);
