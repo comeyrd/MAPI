@@ -75,10 +75,11 @@ app.post("/auth/validate", authed, async (req, res) => {
   });
 });
 
-app.post("/auth/register", async (req, res) => {
-  const { login, password } = req.body;
+app.post("/auth/register", authed, async (req, res) => {
+  const { login, password, infoObj } = req.body;
   try {
     const newtoken = await auth.register(login, password, adminType);
+    await account.create(infoObj, newtoken);
     res.status(200).json({
       Response: "Ok",
       data: { token: newtoken, expiration: auth.jwtExpiration },
@@ -99,14 +100,15 @@ app.get("/", async (req, res) => {
           { id: "/login", params: "login, password" },
           { id: "/validate", params: "token" },
           { id: "/logout", params: "token" },
-          { id: "/validate", params: "token, login, password" },
+          { id: "/update", params: "token, login, password" },
+          { id: "/register", params: "login, password" },
         ],
       },
       {
         id: "/account",
         routes: [
           { id: "/get-info", params: "login, password" },
-          { id: "/edit", params: "token" },
+          { id: "/edit-info", params: "token" },
           { id: "/get-scheme", params: "token" },
         ],
       },
@@ -124,6 +126,19 @@ app.post("/account/get-info", authed, async (req, res) => {
     },
   };
   res.status(200).json(jsonResponse);
+});
+
+app.post("/auth/edit-info", authed, async (req, res) => {
+  const { token, infoObj } = req.body;
+  try {
+    await account.update(infoObj, token);
+    res.status(200).json({
+      Response: "Ok",
+      data: { infoObj },
+    });
+  } catch (error) {
+    res.status(500).json({ Response: "Error", data: { type: error.message } });
+  }
 });
 
 app.post("/account/get-scheme", authed, async (req, res) => {
