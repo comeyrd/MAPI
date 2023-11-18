@@ -3,7 +3,7 @@ import MitiAccount from "miti-account";
 import MitiAuth from "miti-auth";
 import MitiSettings from "miti-settings";
 
-import { TableRows, UserType } from "./config.mjs";
+import { mitiObject } from "./config.mjs";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -31,24 +31,20 @@ const mysqlConfigFirst = {
     //con = await mysql.createConnection(mysqlConfigFirst);
     //await con.query(`CREATE DATABASE mapi;`);
     mysqlPool = await mysql.createPool(mysqlConfig);
-    auth = new MitiAuth(mysqlPool, new MitiSettings(UserType, TableRows));
-    //await auth.setupDatabase();
-    account = new MitiAccount(
-      mysqlPool,
-      auth,
-      new MitiSettings(UserType, TableRows)
-    );
-    /*await auth.register(
+    auth = new MitiAuth(mysqlPool, new MitiSettings(mitiObject));
+    await auth.setupDatabase();
+    account = new MitiAccount(mysqlPool, auth, new MitiSettings(mitiObject));
+    await auth.register(
       process.env.ROOT_LOG,
       process.env.ROOT_PASS,
-      UserType.FUSER
-    );*/
+      mitiObject.FADMIN.id
+    );
     const token = await auth.login(
       process.env.ROOT_LOG,
       process.env.ROOT_PASS,
-      UserType.FUSER
+      mitiObject.FADMIN.id
     );
-    account.create({ name: "miti" }, token);
+    account.create({ email: "miti@ceyraud.com", name: "Miti" }, token);
     await account.setupDatabase();
     console.log("Done");
   } catch (e) {

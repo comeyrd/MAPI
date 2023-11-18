@@ -1,7 +1,9 @@
-export const TableRows = {
-  name: "VARCHAR(80)",
-};
-
-export const UserType = {
-  FUSER: "fuser",
+export const mitiObject = {
+  FADMIN: {
+    id: "fadmin",
+    info: {
+      name: { type: "string", pretty: "Name" },
+      email: { type: "string", pretty: "Email" },
+    },
+  },
 };

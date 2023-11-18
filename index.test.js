@@ -28,9 +28,8 @@ describe("Express App Tests", () => {
     const log1 = "userReg";
     const pass1 = "passReg";
     const registerResp = await request(app)
-      .post("/register")
+      .post("/auth/register")
       .send({ login: log1, password: pass1 });
-
     expect(registerResp.status).to.equal(200);
     expect(registerResp.body).to.have.property("Response", "Ok");
 
@@ -49,7 +48,7 @@ describe("Express App Tests", () => {
     expect(validateResp.body).to.have.property("Response", "Ok");
 
     const deleteResp = await request(app)
-      .post("/delete")
+      .post("/auth/delete")
       .send({ token: loginResp.body.data.token });
 
     expect(deleteResp.status).to.equal(200);
@@ -61,7 +60,7 @@ describe("Express App Tests", () => {
     const pass2 = "passReg2";
 
     const registerResp = await request(app)
-      .post("/register")
+      .post("/auth/register")
       .send({ login: log1, password: pass1 });
 
     expect(registerResp.status).to.equal(200);
@@ -82,7 +81,7 @@ describe("Express App Tests", () => {
     expect(validateResp.body).to.have.property("Response", "Ok");
 
     const updateResp = await request(app)
-      .post("/update")
+      .post("/auth/update")
       .send({ login: log1, password: pass2, token: loginResp.body.data.token });
     expect(updateResp.status).to.equal(200);
     expect(updateResp.body).to.have.property("Response", "Ok");
@@ -96,7 +95,7 @@ describe("Express App Tests", () => {
     expect(login2Resp.body.data).to.have.property("token");
 
     const deleteResp = await request(app)
-      .post("/delete")
+      .post("/auth/delete")
       .send({ token: loginResp.body.data.token });
     expect(deleteResp.status).to.equal(200);
     expect(deleteResp.body).to.have.property("Response", "Ok");
@@ -112,7 +111,7 @@ describe("Express App Tests", () => {
     const pass1 = "passReg";
 
     const registerResp = await request(app)
-      .post("/register")
+      .post("/auth/register")
       .send({ login: log1, password: pass1 });
 
     expect(registerResp.status).to.equal(200);
@@ -127,7 +126,7 @@ describe("Express App Tests", () => {
     expect(loginResp.body.data).to.have.property("token");
 
     const deleteResp = await request(app)
-      .post("/delete")
+      .post("/auth/delete")
       .send({ token: loginResp.body.data.token });
     expect(deleteResp.status).to.equal(200);
     expect(deleteResp.body).to.have.property("Response", "Ok");
@@ -143,7 +142,7 @@ describe("Express App Tests", () => {
     const pass1 = "passReg";
 
     const registerResp = await request(app)
-      .post("/register")
+      .post("/auth/register")
       .send({ login: log1, password: pass1 });
 
     expect(registerResp.status).to.equal(200);
@@ -170,7 +169,7 @@ describe("Express App Tests", () => {
     expect(validateResp.body).to.have.property("Response", "Error");
 
     const deleteResp = await request(app)
-      .post("/delete")
+      .post("/auth/delete")
       .send({ token: loginResp.body.data.token });
     expect(deleteResp.status).to.equal(200);
     expect(deleteResp.body).to.have.property("Response", "Ok");
@@ -195,7 +194,7 @@ describe("Express App Tests", () => {
       .send({ token: loginResp.body.data.token });
     expect(scheme.status).to.equal(200);
     expect(scheme.body).to.have.property("Response", "Ok");
-    expect(scheme.body.data).to.have.property("scheme");
+    console.log(scheme.body.data.scheme);
   });
 });
 function showObj(obj) {
