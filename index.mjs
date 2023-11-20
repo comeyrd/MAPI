@@ -34,7 +34,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const authed = async (req, res, next) => {
+const admined = async (req, res, next) => {
   const { token } = req.body;
   try {
     const decoded = await auth.checkJWT(token);
@@ -66,7 +66,7 @@ app.post("/auth/login", async (req, res) => {
   }
 });
 
-app.post("/auth/validate", authed, async (req, res) => {
+app.post("/auth/validate", admined, async (req, res) => {
   const { id, type } = req.authData;
 
   res.status(200).json({
@@ -75,14 +75,19 @@ app.post("/auth/validate", authed, async (req, res) => {
   });
 });
 
-app.post("/auth/register", authed, async (req, res) => {
-  const { login, password, infoObj } = req.body;
+app.post("/auth/register", admined, async (req, res) => {
+  const { create } = req.body;
+  const { login, pass, info } = create;
   try {
-    const newtoken = await auth.register(login, password, adminType);
-    await account.create(infoObj, newtoken);
+    const newtoken = await auth.register(login, pass, adminType);
+    await account.create(info, newtoken);
     res.status(200).json({
       Response: "Ok",
-      data: { token: newtoken, expiration: auth.jwtExpiration },
+      data: {
+        message: "Account Created",
+        token: newtoken,
+        expiration: auth.jwtExpiration,
+      },
     });
   } catch (error) {
     res.status(500).json({ Response: "Error", data: { type: error.message } });
@@ -116,7 +121,7 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.post("/account/get-info", authed, async (req, res) => {
+app.post("/account/get-info", admined, async (req, res) => {
   const { token } = req.body;
   const uInfo = await account.read(token);
   const jsonResponse = {
@@ -128,7 +133,7 @@ app.post("/account/get-info", authed, async (req, res) => {
   res.status(200).json(jsonResponse);
 });
 
-app.post("/auth/edit-info", authed, async (req, res) => {
+app.post("/auth/edit-info", admined, async (req, res) => {
   const { token, infoObj } = req.body;
   try {
     await account.update(infoObj, token);
@@ -141,7 +146,7 @@ app.post("/auth/edit-info", authed, async (req, res) => {
   }
 });
 
-app.post("/account/get-scheme", authed, async (req, res) => {
+app.post("/account/get-scheme", admined, async (req, res) => {
   const { token } = req.body;
   const scheme = await account.getScheme(token);
   const jsonResponse = {
@@ -156,6 +161,7 @@ app.post("/account/get-scheme", authed, async (req, res) => {
 app.post("/auth/delete", async (req, res) => {
   const { token } = req.body;
   try {
+    await account.delete(token);
     await auth.delete(token);
     res
       .status(200)

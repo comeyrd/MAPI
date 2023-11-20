@@ -44,8 +44,8 @@ const mysqlConfigFirst = {
       process.env.ROOT_PASS,
       mitiObject.FADMIN.id
     );
-    account.create({ email: "miti@ceyraud.com", name: "Miti" }, token);
     await account.setupDatabase();
+    await account.create({ email: "miti@ceyraud.com", name: "Miti" }, token);
     console.log("Done");
   } catch (e) {
     console.error("An error occurred:", e);
