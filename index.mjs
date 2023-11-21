@@ -25,8 +25,10 @@ const app = express();
 app.use(bodyParser.json());
 const port = 8101;
 
+const allowedOrigin = "https://mportal.ceyraud.com"; // Replace with your actual domain
+
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); //TOFIX IN PROD
+  res.header("Access-Control-Allow-Origin", allowedOrigin);
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
